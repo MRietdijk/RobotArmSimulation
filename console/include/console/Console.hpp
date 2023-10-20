@@ -11,6 +11,7 @@ public:
     void askForCommand();
     ~Console();
 private:
+    rclcpp::TimerBase::SharedPtr timer;
     rclcpp::Publisher<robot_arm_interface::msg::Command>::SharedPtr commandPub;
 };
 

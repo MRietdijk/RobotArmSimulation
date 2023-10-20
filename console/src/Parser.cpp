@@ -8,7 +8,7 @@ typedef enum {
     TIME
 } currentState;
 
-Parser::Parser(std::string command)
+Parser::Parser(std::string command) : error(false)
 {
     parseCommand(command);
 }
