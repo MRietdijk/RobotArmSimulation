@@ -4,15 +4,6 @@
 #include <thread>
 
 RobotArmJointPublisher::RobotArmJointPublisher() : Node("robot_arm_joint_publisher") {
-    // this->descriptionSub = this->create_subscription<std_msgs::msg::String>(
-    //     "robot_description",
-    //     rclcpp::QoS(1),
-    //     [this](const std_msgs::msg::String::SharedPtr msg) {
-    //         this->initializeUrdf(msg->data);
-    //     }
-    // );
-
-
     this->declare_parameter("robot_description", std::string(""));
     this->jointStatePub = this->create_publisher<sensor_msgs::msg::JointState>(
         "joint_states",
@@ -21,7 +12,7 @@ RobotArmJointPublisher::RobotArmJointPublisher() : Node("robot_arm_joint_publish
 
     this->commandSub = this->create_subscription<robot_arm_interface::msg::Command>(
         "command",
-        rclcpp::QoS(1),
+        rclcpp::QoS(10),
         [this](const robot_arm_interface::msg::Command::SharedPtr msg) {
             this->commandCallback(msg);
         }

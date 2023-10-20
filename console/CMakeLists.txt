@@ -17,8 +17,12 @@ find_package(robot_arm_interface REQUIRED)
 add_executable(console src/main.cpp src/Console.cpp src/Parser.cpp)
 ament_target_dependencies(console rclcpp robot_arm_interface)
 
+add_executable(sequence src/Sequence.cpp)
+ament_target_dependencies(sequence rclcpp robot_arm_interface)
+
 install(TARGETS
   console
+  sequence
   DESTINATION lib/${PROJECT_NAME})
 
 
