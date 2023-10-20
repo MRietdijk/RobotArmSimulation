@@ -3,7 +3,7 @@
 
 Console::Console() : Node("console") {
     this->commandPub = this->create_publisher<robot_arm_interface::msg::Command>("command", 10);
-    AskForCommand();
+    askForCommand();
 }
 
 Console::~Console() {
@@ -25,7 +25,7 @@ void Console::askForCommand() {
 
     msg->servo_nr = parser.getServoNr();
     msg->pwm = parser.getPwm();
-    msg->time = parser.getTime();
+    msg->time_in_ms = parser.getTime();
 
     this->commandPub->publish(std::move(msg));
 

@@ -18,6 +18,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(urdf REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(robot_arm_interface REQUIRED)
 
 install(
   DIRECTORY launch rviz urdf
@@ -28,7 +29,7 @@ add_executable(cup_publisher src/CSP.cpp src/CupStatePublisher.cpp)
 ament_target_dependencies(cup_publisher rclcpp std_msgs geometry_msgs tf2_ros)
 
 add_executable(robot_arm_publisher src/RAJP.cpp src/RobotArmJointPublisher.cpp)
-ament_target_dependencies(robot_arm_publisher rclcpp std_msgs urdf sensor_msgs)
+ament_target_dependencies(robot_arm_publisher rclcpp std_msgs urdf sensor_msgs robot_arm_interface)
 
 # TODO: Remove test executable
 # add_executable(parser_test src/Main.cpp src/Parser.cpp)

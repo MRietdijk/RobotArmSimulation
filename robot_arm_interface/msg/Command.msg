@@ -1,3 +1,3 @@
-uint8 servoNr
+uint8 servo_nr
 uint16 pwm
-uint16 timeInMs
+uint16 time_in_ms
