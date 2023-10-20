@@ -35,12 +35,11 @@ def generate_launch_description():
             default_value='false',
             description='Use simulation (Gazebo) clock if true'
         ),
-        # Node(
-        #     package='joint_state_publisher_gui',
-        #     executable='joint_state_publisher_gui',
-        #     name='joint_state_publisher',
-        #     parameters=[{'robot_description': robot_desc}]
-        # ),
+        Node(
+            package='simulation',
+            executable='cup_listener',
+            name='cup_picked_up'
+        ),
         Node(
             package='simulation',
             executable='robot_arm_publisher',
