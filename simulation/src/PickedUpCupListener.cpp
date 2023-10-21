@@ -4,7 +4,7 @@ PickedUpCupListener::PickedUpCupListener(): Node("picked_up_cup_listener")
 {
     buffer = std::make_shared<tf2_ros::Buffer>(get_clock());
     listener = std::make_shared<tf2_ros::TransformListener>(*buffer, this, false);
-    publisher = this->create_publisher<std_msgs::msg::Bool>("picked_up_cup", 10);
+    publisher = this->create_publisher<geometry_msgs::msg::TransformStamped>("picked_up_cup", 10);
     timer = this->create_wall_timer(std::chrono::milliseconds(100), [this]() {
         this->timerCallback();
     });
@@ -12,12 +12,12 @@ PickedUpCupListener::PickedUpCupListener(): Node("picked_up_cup_listener")
 
 void PickedUpCupListener::timerCallback()
 {
-    std_msgs::msg::Bool msg;
-    msg.data = false;
+    geometry_msgs::msg::TransformStamped msg;
     try
     {
         geometry_msgs::msg::TransformStamped transformGripperLeft = buffer->lookupTransform("gripper_left", "cup", tf2::TimePointZero);
         geometry_msgs::msg::TransformStamped transformGripperRight = buffer->lookupTransform("gripper_right", "cup", tf2::TimePointZero);
+        geometry_msgs::msg::TransformStamped transformHand = buffer->lookupTransform("hand", "cup", tf2::TimePointZero);
 
         if (
             transformGripperLeft.transform.translation.x < -0.006 &&
@@ -33,17 +33,16 @@ void PickedUpCupListener::timerCallback()
             transformGripperRight.transform.translation.z < 0.022 &&
             transformGripperRight.transform.translation.z > 0.02
         ) {
-            msg.data = true;
+            msg = transformHand;
+        } else {
+            msg = buffer->lookupTransform("base_link", "cup", tf2::TimePointZero);
         }
-
-        RCLCPP_INFO(this->get_logger(), "Gripper left: %f %f %f", transformGripperLeft.transform.translation.x, transformGripperLeft.transform.translation.y, transformGripperLeft.transform.translation.z);
-        RCLCPP_INFO(this->get_logger(), "Gripper right: %f %f %f", transformGripperRight.transform.translation.x, transformGripperRight.transform.translation.y, transformGripperRight.transform.translation.z);
+        publisher->publish(msg);
     }
     catch (tf2::TransformException &ex)
     {
         RCLCPP_WARN(this->get_logger(), "%s", ex.what());
     }
-    publisher->publish(msg);
 }
 
 PickedUpCupListener::~PickedUpCupListener()
