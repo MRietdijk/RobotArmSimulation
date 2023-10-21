@@ -58,8 +58,8 @@ void RobotArmJointPublisher::publishJointStates() {
 void RobotArmJointPublisher::commandCallback(const robot_arm_interface::msg::Command::SharedPtr msg) {
     std::cout << "got msg" << std::endl;
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Got command: %d, %d, %d", msg->servo_nr, msg->pwm, msg->time_in_ms);
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pwm: %d equals to %f radians", msg->pwm, pwmToRadians(msg->pwm));
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Got command: %d, %d, %d", msg->servo_nr, msg->pwm, msg->time_in_ms);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pwm: %d equals to %f radians", msg->pwm, pwmToRadians(msg->pwm));
 
     sendJointToPos(msg->servo_nr, pwmToRadians(msg->pwm), msg->time_in_ms);
 }
