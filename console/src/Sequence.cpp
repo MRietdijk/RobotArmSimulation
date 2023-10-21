@@ -51,7 +51,7 @@ int main(int argc, char const *argv[])
         publisher->publish(msg);
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(3100));
 
     for (uint8_t i = 5; i <= 7; ++i) {
         auto msg = robot_arm_interface::msg::Command();

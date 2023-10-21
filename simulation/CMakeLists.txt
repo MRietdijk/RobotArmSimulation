@@ -31,12 +31,16 @@ ament_target_dependencies(cup_publisher rclcpp std_msgs geometry_msgs tf2_ros)
 add_executable(robot_arm_publisher src/RAJP.cpp src/RobotArmJointPublisher.cpp)
 ament_target_dependencies(robot_arm_publisher rclcpp std_msgs urdf sensor_msgs robot_arm_interface)
 
+add_executable(cup_listener src/PUCL.cpp src/PickedUpCupListener.cpp)
+ament_target_dependencies(cup_listener rclcpp std_msgs geometry_msgs tf2_ros)
+
 # TODO: Remove test executable
 # add_executable(parser_test src/Main.cpp src/Parser.cpp)
 
 install(TARGETS
   cup_publisher
   robot_arm_publisher
+  cup_listener
   DESTINATION lib/${PROJECT_NAME}
 )
 
