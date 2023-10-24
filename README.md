@@ -41,7 +41,7 @@
 
 9.  Ga naar je workspace.
     
-    `cd ws/src`
+    `cd ws`
 
 10. Source de applicatie
     
