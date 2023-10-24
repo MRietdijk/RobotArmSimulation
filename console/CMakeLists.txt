@@ -14,7 +14,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(robot_arm_interface REQUIRED)
 
-add_executable(console src/main.cpp src/Console.cpp src/Parser.cpp)
+add_executable(console src/main.cpp src/Console.cpp)
 ament_target_dependencies(console rclcpp robot_arm_interface)
 
 add_executable(sequence src/Sequence.cpp)

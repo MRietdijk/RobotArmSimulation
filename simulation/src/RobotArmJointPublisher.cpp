@@ -1,4 +1,5 @@
 #include "../include/simulation/RobotArmJointPublisher.hpp"
+#include "../include/simulation/Parser.hpp"
 #include <algorithm>
 #include <math.h>
 #include <thread>
@@ -58,10 +59,13 @@ void RobotArmJointPublisher::publishJointStates() {
 void RobotArmJointPublisher::commandCallback(const robot_arm_interface::msg::Command::SharedPtr msg) {
     std::cout << "got msg" << std::endl;
 
-    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Got command: %d, %d, %d", msg->servo_nr, msg->pwm, msg->time_in_ms);
-    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pwm: %d equals to %f radians", msg->pwm, pwmToRadians(msg->pwm));
+    Parser p(msg->command);
 
-    sendJointToPos(msg->servo_nr, pwmToRadians(msg->pwm), msg->time_in_ms);
+    if (p.getError()) {
+        return;
+    }
+
+    sendJointToPos(p.getServoNr(), pwmToRadians(p.getPwm()), p.getTime());
 }
 
 void RobotArmJointPublisher::sendJointToPos(uint8_t servo_nr, double pos, uint16_t timeInMs) {

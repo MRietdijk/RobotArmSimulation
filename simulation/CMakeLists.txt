@@ -28,7 +28,7 @@ install(
 add_executable(cup_publisher src/CSP.cpp src/CupStatePublisher.cpp)
 ament_target_dependencies(cup_publisher rclcpp std_msgs geometry_msgs tf2_ros)
 
-add_executable(robot_arm_publisher src/RAJP.cpp src/RobotArmJointPublisher.cpp)
+add_executable(robot_arm_publisher src/RAJP.cpp src/RobotArmJointPublisher.cpp src/Parser.cpp)
 ament_target_dependencies(robot_arm_publisher rclcpp std_msgs urdf sensor_msgs robot_arm_interface)
 
 add_executable(cup_listener src/PUCL.cpp src/PickedUpCupListener.cpp)

@@ -10,6 +10,10 @@ typedef struct {
     uint16_t time_in_ms;
 } CommandParameters;
 
+std::string makeCommand(CommandParameters command) {
+    return "#" + std::to_string(command.servo_nr) + "P" + std::to_string(command.pwm) + "T" + std::to_string(command.time_in_ms) + "\r";
+}
+
 int main(int argc, char const *argv[])
 {
     rclcpp::init(argc, argv);
@@ -33,9 +37,7 @@ int main(int argc, char const *argv[])
 
     for (uint8_t i = 0; i <= 2; ++i) {
         auto msg = robot_arm_interface::msg::Command();
-        msg.servo_nr = commands.at(i).servo_nr;
-        msg.pwm = commands.at(i).pwm;
-        msg.time_in_ms = commands.at(i).time_in_ms;
+        msg.command = makeCommand(commands.at(i));
         rclcpp::spin_some(node);
         publisher->publish(msg);
     }
@@ -44,9 +46,7 @@ int main(int argc, char const *argv[])
 
     for (uint8_t i = 3; i <= 4; ++i) {
         auto msg = robot_arm_interface::msg::Command();
-        msg.servo_nr = commands.at(i).servo_nr;
-        msg.pwm = commands.at(i).pwm;
-        msg.time_in_ms = commands.at(i).time_in_ms;
+        msg.command = makeCommand(commands.at(i));
         rclcpp::spin_some(node);
         publisher->publish(msg);
     }
@@ -55,9 +55,7 @@ int main(int argc, char const *argv[])
 
     for (uint8_t i = 5; i <= 7; ++i) {
         auto msg = robot_arm_interface::msg::Command();
-        msg.servo_nr = commands.at(i).servo_nr;
-        msg.pwm = commands.at(i).pwm;
-        msg.time_in_ms = commands.at(i).time_in_ms;
+        msg.command = makeCommand(commands.at(i));
         rclcpp::spin_some(node);
         publisher->publish(msg);
     }
@@ -66,9 +64,7 @@ int main(int argc, char const *argv[])
 
     for (uint8_t i = 8; i <= 9; ++i) {
         auto msg = robot_arm_interface::msg::Command();
-        msg.servo_nr = commands.at(i).servo_nr;
-        msg.pwm = commands.at(i).pwm;
-        msg.time_in_ms = commands.at(i).time_in_ms;
+        msg.command = makeCommand(commands.at(i));
         rclcpp::spin_some(node);
         publisher->publish(msg);
     }
