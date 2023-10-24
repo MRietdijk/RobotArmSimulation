@@ -5,11 +5,11 @@
  - RViz
  - Tf2
 
-## Installeren en runnen
+## Installeren
 
 1. Maak een Ros-workspace aan door het volgende commando uit te voeren.
    
-   `mkdir ws/src`
+   `mkdir -p ws/src`
 
 2. Ga naar de workspace.
    
@@ -27,6 +27,7 @@
    
    `colcon build`
 
+### Runnen
 6. Source de applicatie.
    
    `source ./install/setup.bash`
