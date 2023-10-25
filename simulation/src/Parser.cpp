@@ -37,8 +37,7 @@ void Parser::parseCommand(std::string& command) {
                 }
                 break;
             case WORD:
-                if (command[i] == '\r' || command[i] == ';') {
-                    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Got word: %s", word.c_str());
+                if (command[i] == '\r' || command[i] == ';') { // added ; to end command for normal console
                     if (word == "STOP") {
                         state = BEGINCHAR;
                         this->stop = true;
@@ -76,7 +75,7 @@ void Parser::parseCommand(std::string& command) {
                 }
                 break;
             case TIME:
-                if (command[i] == '\r' || command[i] == ';') {
+                if (command[i] == '\r' || command[i] == ';') { // added ; to end command for normal console
                     state = BEGINCHAR;
                 } else if (isDigit(command[i])) {
                     time += command[i];
