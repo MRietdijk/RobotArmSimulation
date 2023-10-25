@@ -1,0 +1,146 @@
+\documentclass[12pt, legalpaper]{article}
+
+\usepackage{graphicx}
+\usepackage{cleveref}
+\usepackage{parskip}
+\usepackage{rotating}
+\usepackage{tabularx}
+\usepackage{tikz}
+
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+
+\graphicspath{{images/}}
+
+
+\title{Documentatie: Robotarm simulatie}
+\author{Mart Rietdijk (1673342)}
+\date{24 oktober 2023}
+
+
+\begin{document}
+    \begin{titlepage}
+        \maketitle
+        \begin{center}
+            Klas: ITN-WOR-A-s
+
+            Docent: Jorg Visch
+
+            Course: Wor World
+
+            Versie: 1.0
+        \end{center}
+        \thispagestyle{empty}
+    \end{titlepage}
+    \tableofcontents
+    \newpage
+
+    \section{Inleiding}
+    Er zijn veel redenen om hardware in de daadwerkelijke wereld te simuleren.
+    Daarom is deze simulatie opgezet om de meeste risico's van het werken met een robotarm af te vangen.
+
+    In dit document is te vinden hoe de simulatie-opdracht is uitgewerkt.
+
+    \section{De Requirements}
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|c|c|}
+            \hline
+            \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
+            \hline\hline
+            PA01 & Alle code is gepackaged volgens de ROS-directorystructuur. & Should & \checkmark \\
+            \hline
+            PA02 & Package is te bouwen met colcon op ROS2 Humble Hawksbill & Must & \checkmark \\
+            \hline
+            PA03 & De applicatie wordt gebouwd met C++ volgens de Object Oriented principes die je geleerd hebt bij eerdere courses. & Must & \checkmark \\
+            \hline
+            PA04 &  & Should & $\times$ \\
+            \hline
+        \end{tabularx}
+        \caption{Requirements tabel}
+        \label{tab:reqpa}
+    \end{table}
+
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|c|c|}
+            \hline
+            \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
+            \hline\hline
+            VS01 & De virtuele controller luistert naar een topic waarop string messages in het formaat van de SSC-32U 1 worden geplaatst. Van de interface moeten ten minste commando's zijn opgenomen voor het verplaatsen van de servo's met een ingestelde duur en het stoppen van de servo's. & Must & \checkmark \\
+            \hline
+            VS02 & De virtuele controller reageert op het topic (zie eis VS01) door bijbehorende joint\_state messages te publiceren. & Must & \checkmark \\
+            \hline
+            VS03 & De virtuele robotarm wordt gevisualiseerd in Rviz (een URDF-model van de arm is beschikbaar op OnderwijsOnline). & Must* & \checkmark \\
+            \hline
+            VS04 & De virtuele robotarm gedraagt zich realistisch m.b.t. tijdgedrag (servo's roteren kost tijd en gaat geleidelijk). & Must & \checkmark \\
+            \hline
+            VS05 &  & Should & $\times$ \\
+            \hline
+        \end{tabularx}
+        \caption{Requirements tabel}
+        \label{tab:reqvs}
+    \end{table}
+
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|c|c|}
+            \hline
+            \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
+            \hline\hline
+            VC01 & Er kan op een willekeurige plek in de virtuele wereld een bekertje geplaatst worden. & Should & \checkmark \\
+            \hline
+            VC02 & Publiceert een 3D-visualisatie van het bekertje voor Rviz. & Must* & \checkmark \\
+            \hline
+            VC03 & Detecteert de relevante punten van de gripper. & Should & \checkmark \\
+            \hline
+            VC04 & Visualiseert de gedetecteerde punten van de gripper. & Could* & \checkmark \\
+            \hline
+            VC05 & Visualiseert wanneer de gripper het bekertje vastheeft. & Should & \checkmark \\
+            \hline
+            VC06 & Het bekertje beweegt mee met de gripper (als hij vastgehouden wordt). & Must & \checkmark \\
+            \hline
+            VC07 & Bekertje is onderhevig aan zwaartekracht wanneer losgelaten. & Must & \checkmark \\
+            \hline
+            VC08 & Bekertje bepaalt en publiceert zijn positie. & Must & \checkmark \\
+            \hline
+            VC09 & Bekertje bepaalt en publiceert zijn snelheid. & Should & \checkmark \\
+            \hline
+
+        \end{tabularx}
+        \caption{Requirements tabel}
+        \label{tab:reqvc}
+    \end{table}
+
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|c|c|}
+            \hline
+            \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
+            \hline\hline
+            DI01 & Een demoscript stuurt over de tijd een sequentie van commando's naar de armcontroller. 2 & Must & \checkmark \\
+            \hline
+            DI02 & Locatie van het bekertje wordt in de roslaunch-configuratie bepaald. & Could & \checkmark \\
+            \hline
+            DI03 & Locatie van de arm in de wereld wordt in de roslaunch-configuratie bepaald. & Could & \checkmark \\
+            \hline
+
+
+        \end{tabularx}
+        \caption{Requirements tabel}
+        \label{tab:reqdi}
+    \end{table}
+
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|c|c|}
+            \hline
+            \textbf{ID} & \textbf{Beschrijving} & \textbf{Prio} & \textbf{Klaar?}\\
+            \hline\hline
+            DM01 & Beschrijft hoe de code gebouwd kan worden. & Must & \checkmark \\
+            \hline
+            DM02 & Beschrijft stap voor stap hoe de arm bewogen kan worden middels enkele voorbeelden. & Must & \checkmark \\
+            \hline
+            DM03 & Beschrijft welke eisen gerealiseerd zijn. En geeft hierbij een (korte) toelichting. & Must & \checkmark \\
+            \hline
+        \end{tabularx}
+        \caption{Requirements tabel}
+        \label{tab:reqvc}
+    \end{table}
+
+    
+\end{document}
