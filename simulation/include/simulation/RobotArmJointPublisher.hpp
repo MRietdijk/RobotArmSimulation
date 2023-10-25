@@ -25,6 +25,7 @@ private:
     std::unique_ptr<urdf::Model> model;
     rclcpp::TimerBase::SharedPtr timer;
     std::map<std::string, double> joints;
+    std::vector<std::thread> movingThreads;
 
     const std::map<uint8_t, std::string> servoNrToJoints = {
         {0, "base_link2turret"},

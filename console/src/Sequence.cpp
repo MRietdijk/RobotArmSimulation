@@ -42,6 +42,14 @@ int main(int argc, char const *argv[])
         publisher->publish(msg);
     }
 
+    // Code to show stop command
+    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    // auto msg = robot_arm_interface::msg::Command();
+    // msg.command = "STOP\r";
+    // rclcpp::spin_some(node);
+    // publisher->publish(msg);
+
     std::this_thread::sleep_for(std::chrono::milliseconds(2100));
 
     for (uint8_t i = 3; i <= 4; ++i) {

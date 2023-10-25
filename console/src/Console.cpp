@@ -11,7 +11,7 @@ Console::~Console() {
 }
 
 void Console::askForCommand() {
-    std::cout << "Enter command (#<servo_nr>P<PWM>T<time>\\r): ";
+    std::cout << "Enter command (#<servo_nr>P<PWM>T<time>(\\r or ;)): ";
     std::string command;
     std::cin >> command;
     std::cout << "Got command: " << command << std::endl;
