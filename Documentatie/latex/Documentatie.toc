@@ -6,4 +6,9 @@
 \contentsline {subsubsection}{\numberline {3.2.1}Robotarm}{4}{}%
 \contentsline {subsubsection}{\numberline {3.2.2}Cup}{5}{}%
 \contentsline {subsubsection}{\numberline {3.2.3}RViz}{5}{}%
-\contentsline {section}{\numberline {4}Robot-commando's}{7}{}%
+\contentsline {section}{\numberline {4}Klassendiagram}{7}{}%
+\contentsline {subsection}{\numberline {4.1}RobotArmJointPublisher}{7}{}%
+\contentsline {subsection}{\numberline {4.2}CupStatePublisher}{7}{}%
+\contentsline {subsection}{\numberline {4.3}PickedUpCupListener}{7}{}%
+\contentsline {subsection}{\numberline {4.4}Parser}{7}{}%
+\contentsline {section}{\numberline {5}Robot-commando's}{10}{}%

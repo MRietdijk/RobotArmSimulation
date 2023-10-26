@@ -8,6 +8,12 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{rotating}
+\usepackage[
+backend=biber,
+style=apa,
+]{biblatex}
+
+\addbibresource{ref.bib}
 
 \graphicspath{images/}
 
@@ -194,7 +200,7 @@
     \end{itemize}
 
     \subsubsection{Robotarm}
-    De robot\_arm\_publisher aanvraart het commando op het Topic command, en leest dit uit met de parser.
+    De robot\_arm\_publisher aanvaardt het commando op het Topic command, en leest dit uit met de parser.
     Het commando dat op command wordt gepublished kan een commando zijn die zegt op welke PWM waarde de servo moet staan en hoe lang hij hier over mag doen, of een commando om alle servo's die bewegen te stoppen.
     De commando's komen in hoofdstuk \ref{commands} aan bod.
 
@@ -227,9 +233,69 @@
 
     \newpage
 
+    \section{Klassendiagram}
+    In dit hoofdstuk wordt het klassendiagram van de applicatie besproken.
+    Het klassen diagram is te zien in afbeelding \cref{fig:classdiagram}.
+    Hieronder volgt een beschrijving per klasse.
+
+    \subsection{RobotArmJointPublisher}
+    In deze klasse wordt de URDF van de robot-arm ingeladen. Van de URDF worden de joints opgeslagen in een map ``joints''.
+    Deze map bestaat uit de joint naam en de huidige positie van de joint.
+    Nadat de joints worden aangemaakt worden deze om de 10 milliseconden gepublished. Dit wordt gedaan door de functie publishJointStates.
+    
+    Wanneer een commando binnenkomt op de commandSub wordt de commandCallback methode aangeroepen. Daarna worden de PWM waarden van het commando omgerekend tot radialen.
+    Daarna worden er stappen in radialen per milliseconden berekend.
+    Deze stappen worden doorgegeven aan de sendJointToPos methode. Deze methode maakt een thread aan die voor het aantal milliseconden dat het commando aangeeft, de stappen bij de huidige positie worden opgeteld.
+    Deze thread wordt opgeslagen in de movingThreads vector, zodat als er een stop commando wordt gegeven de thread nog gestopt kan worden.
+
+    Als er een commando ``STOP'' binnenkomt, worden de opgeslagen threads in de vector direct gestopt.
+
+    \subsection{CupStatePublisher}
+    In CupStatePublisher wordt eerst de URDF ingeladen met behulp van setupUrdf.
+    Deze URDF wordt daarna op zijn tijd gepublished d.m.v. de methode publishCup.
+
+    De CupStatePublisher heeft ook een subscription op een Topic waar de postie ten opzichte van de hand of onderkant van de robotarm wordt geplublished.
+    Op basis daarvan zorgt de methode updatePos of de positie van de cup beweegt of niet.
+
+    \subsection{PickedUpCupListener}
+    De PickedUpCupListener kijkt of de gripper de cup vast heeft ja of nee. Daar op basis geeft hij de afstand van de hand of de afstand van de onderkant van de robotarm.
+    Dit doet hij in de functie timerCallback, die om de 100 milliseconden op de topic published.
+
+    \subsection{Parser}
+    Omdat er commando's in string formaat komen, in de vorm van een protocol van Lynxmotion SSC-32U USB Servo Controller Board (\cite{lynxmoti36:online}), moet er een Parser aan boord zijn van de RobotArmJointPublisher.
+    Deze Parser maakt op basis van een statemachine bekend wat de servonr, pwm, en tijd is per bericht.
+    Dit gebeurt door een Parser object aan te maken met een string. Direct in de constructor parsed hij het bericht.
+    Door middel van de getters kunnen deze waarden opgehaald worden. Dit gebeurt dus ook per commando in RobotArmJointPublisher.
+
+    Naast een commando voor het bewegen van een servo, kan er ook een stop commando geparsed worden.
+
+    \begin{sidewaysfigure}
+        \includegraphics[width=1\textwidth]{KlassenDiagramSimulation}
+        \caption{Klassendiagram simulation}
+        \label{fig:classdiagram}
+    \end{sidewaysfigure}
+
+    \newpage
+
     \section{Robot-commando's}
     \label{commands}
+    In het volgende tabel staan de commando's die gestuurd kunnen worden naar de robotarm.
+    Deze commando's komen voort uit de SSC-32u protocol beschrijving (\cite{lynxmoti36:online})
 
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|}
+            \hline
+            \textbf{Commando} & \textbf{Beschrijving}\\
+            \hline\hline
+            $\#\langle servoNr\rangle P\langle pwm \rangle T\langle time In Ms \rangle$\textbackslash r & Beweegt een servo naar de aangegeven PWM. Dit duurt het aantal aangegeven milliseconden. De minimale waarde voor pwm is 1000 en maximale waarde is 2000.\\
+            \hline
+            STOP & Stopt alle bewegende servo's\\
+            \hline
+        \end{tabularx}
+        \caption{Commando's tabel}
+        \label{tab:commands}
+    \end{table}
 
+    \printbibliography
     
 \end{document}

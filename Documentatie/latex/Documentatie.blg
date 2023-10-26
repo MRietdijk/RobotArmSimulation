@@ -1,0 +1,19 @@
+[0] Config.pm:307> INFO - This is Biber 2.19
+[0] Config.pm:310> INFO - Logfile is 'Documentatie.blg'
+[76] biber:340> INFO - === do okt 26, 2023, 11:31:21
+[90] Biber.pm:419> INFO - Reading 'Documentatie.bcf'
+[167] Biber.pm:979> INFO - Found 1 citekeys in bib section 0
+[184] Biber.pm:4419> INFO - Processing section 0
+[195] Biber.pm:4610> INFO - Looking for bibtex file 'ref.bib' for section 0
+[196] bibtex.pm:1713> INFO - LaTeX decoding ...
+[198] bibtex.pm:1519> INFO - Found BibTeX data source 'ref.bib'
+[205] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[205] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[206] Biber.pm:4239> INFO - Sorting list 'apa/apasortcite//global/global' of type 'entry' with template 'apa' and locale 'en-US'
+[206] Biber.pm:4245> INFO - No sort tailoring available for locale 'en-US'
+[214] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[214] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[214] Biber.pm:4239> INFO - Sorting list 'apa/global//global/global' of type 'entry' with template 'apa' and locale 'en-US'
+[214] Biber.pm:4245> INFO - No sort tailoring available for locale 'en-US'
+[215] bbl.pm:660> INFO - Writing 'Documentatie.bbl' with encoding 'UTF-8'
+[215] bbl.pm:763> INFO - Output to Documentatie.bbl
