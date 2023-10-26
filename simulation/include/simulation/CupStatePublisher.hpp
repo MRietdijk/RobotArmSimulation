@@ -23,7 +23,6 @@ private:
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr description_pub_;
     rclcpp::Subscription<geometry_msgs::msg::TransformStamped>::SharedPtr cupPickedUpSub;
     std::string redCup;
-    std::string greenCup;
     geometry_msgs::msg::TransformStamped currentTransform;
     uint8_t speedFactor;
 };
