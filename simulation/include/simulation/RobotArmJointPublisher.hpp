@@ -22,7 +22,6 @@ private:
     // attributes
     rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr jointStatePub;
     rclcpp::Subscription<robot_arm_interface::msg::Command>::SharedPtr commandSub;
-    std::unique_ptr<urdf::Model> model;
     rclcpp::TimerBase::SharedPtr timer;
     std::map<std::string, double> joints;
     std::vector<std::thread> movingThreads;
