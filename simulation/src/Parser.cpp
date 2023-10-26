@@ -1,14 +1,16 @@
 #include "../include/simulation/Parser.hpp"
 #include <iostream>
+#include "rclcpp/rclcpp.hpp"
 
 typedef enum {
     BEGINCHAR,
+    WORD,
     SERVO_NR,
     PWM,
     TIME
 } currentState;
 
-Parser::Parser(std::string command) : error(false)
+Parser::Parser(std::string command) : error(false), servoNr(0), pwm(0), time(0), stop(false)
 {
     parseCommand(command);
 }
@@ -22,12 +24,32 @@ void Parser::parseCommand(std::string& command) {
     std::string servoNr = "";
     std::string pwm = "";
     std::string time = "";
+    std::string word = "";
 
     for (size_t i = 0; i < command.length(); ++i) {
         switch (state) {
             case BEGINCHAR:
                 if (command[i] == '#') {
                     state = SERVO_NR;
+                } else {
+                    state = WORD;
+                    word += command[i];
+                }
+                break;
+            case WORD:
+                if (command[i] == '\r' || command[i] == ';') { // added ; to end command for normal console
+                    if (word == "STOP") {
+                        state = BEGINCHAR;
+                        this->stop = true;
+                    } else {
+                        state = BEGINCHAR;
+                        this->errorHandler();
+                    }
+                } else if (!isDigit(command[i])) {
+                    word += command[i];
+                } else {
+                    state = BEGINCHAR;
+                    this->errorHandler();
                 }
                 break;
             case SERVO_NR:
@@ -53,7 +75,7 @@ void Parser::parseCommand(std::string& command) {
                 }
                 break;
             case TIME:
-                if (command[i] == '\r') {
+                if (command[i] == '\r' || command[i] == ';') { // added ; to end command for normal console
                     state = BEGINCHAR;
                 } else if (isDigit(command[i])) {
                     time += command[i];
@@ -66,7 +88,7 @@ void Parser::parseCommand(std::string& command) {
         }
     }
 
-    if (!this->error) {
+    if (!this->error && !this->stop) {
         std::cout << "ServoNr: " << servoNr << std::endl;
         std::cout << "PWM: " << pwm << std::endl;
         std::cout << "Time: " << time << std::endl;
@@ -87,7 +109,7 @@ bool Parser::isDigit(char ch) const {
 }
 
 void Parser::errorHandler() {
-    std::cout << "Error: Invalid command" << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Error in command");
     this->error = true;
 }
 
@@ -105,4 +127,8 @@ uint16_t Parser::getTime() const {
 
 bool Parser::getError() const {
     return this->error;
+}
+
+bool Parser::getStop() const {
+    return this->stop;
 }

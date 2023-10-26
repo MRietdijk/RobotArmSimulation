@@ -63,9 +63,13 @@ void RobotArmJointPublisher::commandCallback(const robot_arm_interface::msg::Com
 
     if (p.getError()) {
         return;
+    } else if (p.getStop()) {
+        for (auto &t : movingThreads) {
+            pthread_cancel(t.native_handle());
+        }
+    } else {
+        sendJointToPos(p.getServoNr(), pwmToRadians(p.getPwm()), p.getTime());
     }
-
-    sendJointToPos(p.getServoNr(), pwmToRadians(p.getPwm()), p.getTime());
 }
 
 void RobotArmJointPublisher::sendJointToPos(uint8_t servo_nr, double pos, uint16_t timeInMs) {
@@ -86,7 +90,9 @@ void RobotArmJointPublisher::sendJointToPos(uint8_t servo_nr, double pos, uint16
         this->joints.at(this->servoNrToJoints.at(servo_nr)) = endPos;
     };
 
-    std::thread{sendJointFunc, step, servo_nr, pos, timeInMs}.detach();
+    std::thread t(sendJointFunc, step, servo_nr, pos, timeInMs);
+
+    movingThreads.push_back(std::move(t));
 }
 
 double RobotArmJointPublisher::pwmToRadians(uint16_t pwm) {

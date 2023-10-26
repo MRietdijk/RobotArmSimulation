@@ -13,6 +13,7 @@ public:
     uint16_t getPwm() const;
     uint16_t getTime() const;
     bool getError() const;
+    bool getStop() const;
     ~Parser();
 private:
     void parseCommand(std::string& command);
@@ -24,6 +25,7 @@ private:
     uint8_t servoNr;
     uint16_t pwm;
     uint16_t time;
+    bool stop;
 };
 
 
