@@ -6,6 +6,10 @@
 \usepackage{rotating}
 \usepackage{tabularx}
 \usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{rotating}
+
+\graphicspath{images/}
 
 \def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
 
@@ -84,15 +88,15 @@
             \hline
             \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
             \hline\hline
-            VC01 & Er kan op een willekeurige plek in de virtuele wereld een bekertje geplaatst worden. & Should & \checkmark \\
+            VC01 & & Should & $\times$ \\
             \hline
             VC02 & Publiceert een 3D-visualisatie van het bekertje voor Rviz. & Must* & \checkmark \\
             \hline
-            VC03 & Detecteert de relevante punten van de gripper. & Should & \checkmark \\
+            VC03 &  & Should & $\times$ \\
             \hline
-            VC04 & Visualiseert de gedetecteerde punten van de gripper. & Could* & \checkmark \\
+            VC04 & & Could* & $\times$ \\
             \hline
-            VC05 & Visualiseert wanneer de gripper het bekertje vastheeft. & Should & \checkmark \\
+            VC05 & & Should & $\times$ \\
             \hline
             VC06 & Het bekertje beweegt mee met de gripper (als hij vastgehouden wordt). & Must & \checkmark \\
             \hline
@@ -108,6 +112,8 @@
         \label{tab:reqvc}
     \end{table}
 
+    \newpage
+
     \begin{table}[h]
         \begin{tabularx}{1\textwidth} {|c|X|c|c|}
             \hline
@@ -115,9 +121,9 @@
             \hline\hline
             DI01 & Een demoscript stuurt over de tijd een sequentie van commando's naar de armcontroller. 2 & Must & \checkmark \\
             \hline
-            DI02 & Locatie van het bekertje wordt in de roslaunch-configuratie bepaald. & Could & \checkmark \\
+            DI02 & & Could & $\times$ \\
             \hline
-            DI03 & Locatie van de arm in de wereld wordt in de roslaunch-configuratie bepaald. & Could & \checkmark \\
+            DI03 & & Could & $\times$ \\
             \hline
 
 
@@ -129,7 +135,7 @@
     \begin{table}[h]
         \begin{tabularx}{1\textwidth} {|c|X|c|c|}
             \hline
-            \textbf{ID} & \textbf{Beschrijving} & \textbf{Prio} & \textbf{Klaar?}\\
+            \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
             \hline\hline
             DM01 & Beschrijft hoe de code gebouwd kan worden. & Must & \checkmark \\
             \hline
@@ -141,6 +147,89 @@
         \caption{Requirements tabel}
         \label{tab:reqvc}
     \end{table}
+
+    \begin{table}[h]
+        \begin{tabularx}{1\textwidth} {|c|X|c|c|}
+            \hline
+            \textbf{ID} & \textbf{Wat is er gedaan?} & \textbf{Prio} & \textbf{Klaar?}\\
+            \hline\hline
+            DD01 & Beschrijft de structuur van de package (Nodes, topics, messages, et cetera). & Must & \checkmark \\
+            \hline
+            DD02 & Beschrijft de structuur en samenhang van de broncode (class-diagrams, beschrijving, et cetera). & Must & \checkmark \\
+            \hline
+            DD03 &  & Could & $\times$ \\
+            \hline
+            DD04 &  & Should & $\times$ \\
+            \hline
+        \end{tabularx}
+        \caption{Requirements tabel}
+        \label{tab:reqdd}
+    \end{table}
+
+    \newpage
+    
+    \section{ROS-structuur}
+    In ROS is een structuur te beschrijven in Topic, services, Nodes, en Actions.
+    Deze structuur wordt in dit hoofdstuk besproken per ROS-package.
+    De structuur is te vinden in het onderstaande plaatje (\cref{fig:full-structure}).
+    \subsection{Console package}
+    De Console package published een Node ``Console''.
+    Deze Node published weer een Topic command. Deze Topic is van het type Command beschreven in de package robot\_arm\_interface.
+    Deze Topic bevat een string. Deze wordt gevraagd door de Node ``Console'' en verstuurd via deze Topic naar de Node robot\_arm\_interface.
+
+    \subsection{Simulation package}
+    In De Simulation package worden de volgende Nodes gepublished (met een kleine beschrijving):
+    \begin{itemize}
+        \item robot\_arm\_publisher: Published alle joints van de robotarm
+        \item robot\_publisher: Is de standaard robot\_state\_publisher van ROS2
+        \item cup\_picked\_up: Is een tf listener die kijkt of dat de arm de cup vast heeft
+        \item cup\_publisher: Published de cup frame
+    \end{itemize}
+    Deze Nodes bieden hun eigen Topics weer aan (met een kleine beschrijving):
+    \begin{itemize}
+        \item joint\_states: De Topic die de status van de joints van de robotarm published
+        \item picked\_up\_cup: De Topic die aangeeft of de cup wordt opgepakt door de robotarm
+        \item robot\_description: De Topic die de robotarm URDF aan RViz geeft
+        \item cup\_description: De Topic die de cup URDF aan RViz geeft
+    \end{itemize}
+
+    \subsubsection{Robotarm}
+    De robot\_arm\_publisher aanvraart het commando op het Topic command, en leest dit uit met de parser.
+    Het commando dat op command wordt gepublished kan een commando zijn die zegt op welke PWM waarde de servo moet staan en hoe lang hij hier over mag doen, of een commando om alle servo's die bewegen te stoppen.
+    De commando's komen in hoofdstuk \ref{commands} aan bod.
+
+    In de launchfile wordt de URDF aan de robot\_arm\_interface meegegeven. Daaruit leest de Node de URDF in en published de joint states naar de Topic joint\_states.
+
+    Deze joint states worden opgevangen door de robot\_publisher Node. Deze Node verwerkt de states en published op basis daarvan de frames naar het tf framework.
+
+    \subsubsection{Cup}
+    Naast de robotarm staat er ook een bekertje (cup) in de wereld.
+    Daarvoor zorgt de cup\_publisher Node. Deze published een cup frame naar het tf framework.
+    Deze cup frame heeft een afstand ten opzichte van de robotarm. 
+    
+    De cup\_publisher luistert naar de Topic picked\_up\_cup. Op deze Topic wordt of de afstand van de cup naar de onderkant van de robotarm gestuurd, of de afstand van de cup ten opzichte van de hand.
+    Deze keuze wordt gebaseerd op het feit dat de robotarm de cup vast heeft of niet.
+    Dit is te meten aan de afstand van de grippers van de robotarm ten opichte van de cup.
+    
+    Als de robotarm de cup vast heeft, wordt de afstand van de hand gestuurd, en houdt de cup deze afstanden vast.
+    En als de robotarm de cup niet vast heeft, valt de cup op de grond ten opzichte van de onderkant van de robotarm.
+
+    \subsubsection{RViz}
+    Op de Topics cup\_description en robot\_description, worden de URDFs van de robotarm en cup gepublished als string.
+    Dit wordt gedaan zodat RViz weet bij welke joint wat te tekenen.
+
+
+    \begin{sidewaysfigure}
+        \includegraphics[width=1\textwidth]{rosgraph}
+        \caption{Volledige ROS-structuur}
+        \label{fig:full-structure}
+    \end{sidewaysfigure}
+
+    \newpage
+
+    \section{Robot-commando's}
+    \label{commands}
+
 
     
 \end{document}
