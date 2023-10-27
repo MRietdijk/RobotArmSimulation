@@ -27,6 +27,8 @@ int main(int argc, char const *argv[])
         {1, 1500, 2000},
         {2, 1500, 2000},
         {3, 1500, 2000},
+        {4, 1400, 2000},
+        {4, 1500, 2000},
         {5, 1500, 1000},
         {6, 1500, 1000},
     };
@@ -71,6 +73,16 @@ int main(int argc, char const *argv[])
     std::this_thread::sleep_for(std::chrono::milliseconds(2100));
 
     for (uint8_t i = 8; i <= 9; ++i) {
+        auto msg = robot_arm_interface::msg::Command();
+        msg.command = makeCommand(commands.at(i));
+        rclcpp::spin_some(node);
+        publisher->publish(msg);
+        std::this_thread::sleep_for(std::chrono::milliseconds(2100));
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+    for (uint8_t i = 10; i <= 11; ++i) {
         auto msg = robot_arm_interface::msg::Command();
         msg.command = makeCommand(commands.at(i));
         rclcpp::spin_some(node);
